@@ -21,8 +21,10 @@ ROLE_PATHS = set((
     'templates',
     'tests',
     'vars',
+    'README',
     'README.md',
     'LICENSE',
+    'LICENSE.txt',
 ))
 
 PLUGINS = frozenset((
@@ -136,7 +138,7 @@ for role_dir in ROLE_PATHS:
             dirs_exist_ok=True
         )
     else:
-        dest.mkdir(parents=True, exist_ok=True)
+        dest.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(
             src,
             dest,
