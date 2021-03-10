@@ -70,7 +70,6 @@ parser.add_argument(
     '--extra-path',
     default=[],
     action='append',
-    type=Path,
     help='Extra role relative file/directory path to keep with the role',
 )
 parser.add_argument(
