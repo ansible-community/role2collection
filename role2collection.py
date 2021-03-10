@@ -55,6 +55,8 @@ FROM_RE = re.compile(
     flags=re.M
 )
 
+BAD_NAME_RE = re.compile(r'[^a-zA-Z0-9_]')
+
 
 def dir_to_plugin(v):
     if v[-8:] == '_plugins':
@@ -83,6 +85,10 @@ path = args.path.resolve()
 output = args.output.resolve()
 output.mkdir(exist_ok=True)
 
+# Normalize the role name
+# 1. Split on `.` and use the last part
+# 2. Convert invalid python naming characters to underscore
+coll_role_name = re.sub('_+', '_', BAD_NAME_RE.sub('_', path.name.split('.')[-1]))
 
 _extras = set(os.listdir(path)).difference(ALL_DIRS)
 try:
@@ -95,7 +101,7 @@ for role_dir in ROLE_DIRS:
     src = path / role_dir
     if not src.is_dir():
         continue
-    dest = output / 'roles' / path.name / role_dir
+    dest = output / 'roles' / coll_role_name / role_dir
     print(f'Copying {src} to {dest}')
     shutil.copytree(
         src,
