@@ -10,7 +10,7 @@ import re
 import shutil
 from pathlib import Path
 
-ROLE_PATHS = (
+ROLE_PATHS = set((
     'defaults',
     'files',
     'handlers',
@@ -21,9 +21,9 @@ ROLE_PATHS = (
     'vars',
     'README.md',
     'LICENSE',
-)
+))
 
-PLUGINS = (
+PLUGINS = frozenset((
     'action_plugins',
     'become_plugins',
     'cache_plugins',
@@ -43,9 +43,7 @@ PLUGINS = (
     'terminal_plugins',
     'test_plugins',
     'vars_plugins',
-)
-
-ALL_PATHS = ROLE_PATHS + PLUGINS
+))
 
 IMPORT_RE = re.compile(
     br'(\bimport) (ansible\.module_utils\.)(\S+)(.*)$',
@@ -69,6 +67,13 @@ def dir_to_plugin(v):
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
+    '--extra-path',
+    default=[],
+    action='append',
+    type=Path,
+    help='Extra role relative file/directory path to keep with the role',
+)
+parser.add_argument(
     'path',
     type=Path,
     metavar='ROLE_PATH',
@@ -88,6 +93,8 @@ output.mkdir(parents=True, exist_ok=True)
 
 base = os.path.commonpath([path, output])
 
+ROLE_PATHS.update(args.extra_path)
+
 # Normalize the role name
 # 1. Split on `.` and use the last part
 # 2. Convert invalid python naming characters to underscore
@@ -97,7 +104,7 @@ coll_role_name = re.sub(
     BAD_NAME_RE.sub('_', path.name.split('.')[-1])
 )
 
-_extras = set(os.listdir(path)).difference(ALL_PATHS)
+_extras = set(os.listdir(path)).difference(PLUGINS | ROLE_PATHS)
 try:
     _extras.remove('.git')
 except KeyError:
@@ -117,6 +124,7 @@ for role_dir in ROLE_PATHS:
             dirs_exist_ok=True
         )
     else:
+        dest.mkdir(parents=True, exist_ok=True)
         shutil.copy2(
             src,
             dest,
