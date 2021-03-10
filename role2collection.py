@@ -10,7 +10,7 @@ import re
 import shutil
 from pathlib import Path
 
-ROLE_DIRS = (
+ROLE_PATHS = (
     'defaults',
     'files',
     'handlers',
@@ -19,6 +19,8 @@ ROLE_DIRS = (
     'templates',
     'tests',
     'vars',
+    'README.md',
+    'LICENSE',
 )
 
 PLUGINS = (
@@ -40,10 +42,10 @@ PLUGINS = (
     'strategy_plugins',
     'terminal_plugins',
     'test_plugins',
-    'vars_plugins'
+    'vars_plugins',
 )
 
-ALL_DIRS = ROLE_DIRS + PLUGINS
+ALL_PATHS = ROLE_PATHS + PLUGINS
 
 IMPORT_RE = re.compile(
     br'(\bimport) (ansible\.module_utils\.)(\S+)(.*)$',
@@ -95,24 +97,31 @@ coll_role_name = re.sub(
     BAD_NAME_RE.sub('_', path.name.split('.')[-1])
 )
 
-_extras = set(os.listdir(path)).difference(ALL_DIRS)
+_extras = set(os.listdir(path)).difference(ALL_PATHS)
 try:
     _extras.remove('.git')
 except KeyError:
     pass
 extras = [path / e for e in _extras]
 
-for role_dir in ROLE_DIRS:
+for role_dir in ROLE_PATHS:
     src = path / role_dir
-    if not src.is_dir():
+    if not src.exists():
         continue
     dest = output / 'roles' / coll_role_name / role_dir
     print(f'Copying {src.relative_to(base)} to {dest.relative_to(base)}')
-    shutil.copytree(
-        src,
-        dest,
-        dirs_exist_ok=True
-    )
+    if src.is_dir():
+        shutil.copytree(
+            src,
+            dest,
+            dirs_exist_ok=True
+        )
+    else:
+        shutil.copy2(
+            src,
+            dest,
+            follow_symlinks=False
+        )
 
 for plugin_dir in PLUGINS:
     src = path / plugin_dir
