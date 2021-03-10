@@ -132,6 +132,7 @@ for role_dir in ROLE_PATHS:
         shutil.copytree(
             src,
             dest,
+            symlinks=True,
             dirs_exist_ok=True
         )
     else:
@@ -152,6 +153,7 @@ for plugin_dir in PLUGINS:
     shutil.copytree(
         src,
         dest,
+        symlinks=True,
         dirs_exist_ok=True
     )
 
@@ -244,6 +246,7 @@ for extra in extras:
         shutil.copytree(
             extra,
             dest,
+            symlinks=True,
             dirs_exist_ok=True
         )
     else:
