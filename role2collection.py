@@ -83,7 +83,7 @@ args = parser.parse_args()
 
 path = args.path.resolve()
 output = args.output.resolve()
-output.mkdir(exist_ok=True)
+output.mkdir(parents=True, exist_ok=True)
 
 # Normalize the role name
 # 1. Split on `.` and use the last part
