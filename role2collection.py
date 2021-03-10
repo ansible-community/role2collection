@@ -10,6 +10,8 @@ import re
 import shutil
 from pathlib import Path
 
+import yaml
+
 ROLE_PATHS = set((
     'defaults',
     'files',
@@ -94,13 +96,23 @@ base = os.path.commonpath([path, output])
 
 ROLE_PATHS.update(args.extra_path)
 
+try:
+    meta = path / 'meta'
+    for main in ('main.yml', 'main.yaml', 'main.json'):
+        if (meta / main).exists():
+            break
+    else:
+        raise RuntimeError('no meta/main.yml')
+    role_meta = yaml.safe_load((meta / main).read_text())
+    role_name = role_meta['galaxy_info']['role_name']
+except Exception as e:
+    role_name = path.name.split('.')[-1]
+
 # Normalize the role name
-# 1. Split on `.` and use the last part
-# 2. Convert invalid python naming characters to underscore
 coll_role_name = re.sub(
     '_+',
     '_',
-    BAD_NAME_RE.sub('_', path.name.split('.')[-1])
+    BAD_NAME_RE.sub('_', role_name)
 )
 
 _extras = set(os.listdir(path)).difference(PLUGINS | ROLE_PATHS)
