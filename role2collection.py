@@ -8,7 +8,6 @@ import argparse
 import os
 import re
 import shutil
-
 from pathlib import Path
 
 ROLE_DIRS = (
@@ -85,10 +84,16 @@ path = args.path.resolve()
 output = args.output.resolve()
 output.mkdir(parents=True, exist_ok=True)
 
+base = os.path.commonpath([path, output])
+
 # Normalize the role name
 # 1. Split on `.` and use the last part
 # 2. Convert invalid python naming characters to underscore
-coll_role_name = re.sub('_+', '_', BAD_NAME_RE.sub('_', path.name.split('.')[-1]))
+coll_role_name = re.sub(
+    '_+',
+    '_',
+    BAD_NAME_RE.sub('_', path.name.split('.')[-1])
+)
 
 _extras = set(os.listdir(path)).difference(ALL_DIRS)
 try:
@@ -102,7 +107,7 @@ for role_dir in ROLE_DIRS:
     if not src.is_dir():
         continue
     dest = output / 'roles' / coll_role_name / role_dir
-    print(f'Copying {src} to {dest}')
+    print(f'Copying {src.relative_to(base)} to {dest.relative_to(base)}')
     shutil.copytree(
         src,
         dest,
@@ -115,7 +120,7 @@ for plugin_dir in PLUGINS:
     if not src.is_dir():
         continue
     dest = output / 'plugins' / plugin
-    print(f'Copying {src} to {dest}')
+    print(f'Copying {src.relative_to(base)} to {dest.relative_to(base)}')
     shutil.copytree(
         src,
         dest,
@@ -204,7 +209,9 @@ for rewrite_dir in (module_utils_dir, modules_dir):
 
 for extra in extras:
     dest = output / extra.name
-    print(f'Copying {extra} to {dest}')
+    print(
+        f'Copying {extra.relative_to(base)} to {dest.relative_to(base)}'
+    )
     if extra.is_dir():
         shutil.copytree(
             extra,
