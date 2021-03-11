@@ -12,6 +12,8 @@ from pathlib import Path
 
 import yaml
 
+# This list should not container files/dirs for 3rd party tools
+# Use --extra-path for additional paths
 ROLE_PATHS = set((
     'defaults',
     'files',
