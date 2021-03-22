@@ -32,7 +32,7 @@ optional arguments:
 $ python3.8 role2collection.py --extra-path CONTRIBUTING.md roles/role.name collections/ansible_collections/ns/name
 ```
 
-### What does this tool do
+### What this tool does
 
 1. Migrates standard role directories and a few files into a role within a collection:
   * `defaults`
