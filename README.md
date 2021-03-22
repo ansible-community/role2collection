@@ -12,8 +12,7 @@ After using these tools, users should manually verify the changes, and may be re
 ### Help
 
 ```
-usage: role2collection.py [-h] [--extra-path EXTRA_PATH]
-                          ROLE_PATH COLLECTION_PATH
+usage: role2collection.py [-h] [--extra-path EXTRA_PATH] ROLE_PATH COLLECTION_PATH
 
 positional arguments:
   ROLE_PATH             Path to a role to migrate
@@ -22,8 +21,8 @@ positional arguments:
 optional arguments:
   -h, --help            show this help message and exit
   --extra-path EXTRA_PATH
-                        Extra role relative file/directory path to keep with
-                        the role
+                        Extra role relative file/directory path to keep with the role. May be supplied multiple
+                        times
 ```
 
 ### Example use
@@ -35,17 +34,17 @@ $ python3.8 role2collection.py --extra-path CONTRIBUTING.md roles/role.name coll
 ### What this tool does
 
 1. Migrates standard role directories and a few files into a role within a collection:
-  * `defaults`
-  * `files`
-  * `handlers`
-  * `meta`
-  * `tasks`
-  * `templates`
-  * `tests`
-  * `vars`
-  * `README.md` / `README`
-  * `LICENSE.txt` / `LICENSE`
-  * For any other file or directory you wish to keep with a role use `--extra-path`
+    * `defaults`
+    * `files`
+    * `handlers`
+    * `meta`
+    * `tasks`
+    * `templates`
+    * `tests`
+    * `vars`
+    * `README.md` / `README`
+    * `LICENSE.txt` / `LICENSE`
+    * For any other file or directory you wish to keep with a role use `--extra-path`
 1. Migrates plugins from the role into the collection level plugin directories
 1. Rewrites `module_utils` imports in `modules` and `module_utils` to support the migration
 1. Migrates all other directories or files into the root of the collection
@@ -57,3 +56,4 @@ $ python3.8 role2collection.py --extra-path CONTRIBUTING.md roles/role.name coll
 1. Does not modify anything in role YAML files
 1. Overwrites duplicate files
 1. Does not come with any warranties
+1. Does not special case any 3rd party tool directory or files, use `--extra-path` to support this
