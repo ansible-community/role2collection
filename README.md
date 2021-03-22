@@ -14,3 +14,26 @@ After using these tools, users should manually verify the changes, and may be re
 1. Does not modify anything in role YAML files
 1. Overwrites duplicate files
 1. Does not come with any warranties
+
+### Help
+
+```
+usage: role2collection.py [-h] [--extra-path EXTRA_PATH]
+                          ROLE_PATH COLLECTION_PATH
+
+positional arguments:
+  ROLE_PATH             Path to a role to migrate
+  COLLECTION_PATH       Path to collection where role should be migrated
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --extra-path EXTRA_PATH
+                        Extra role relative file/directory path to keep with
+                        the role
+```
+
+### Example use
+
+```
+$ python3.8 role2collection.py --extra-path CONTRIBUTING.md roles/role.name collections/ansible_collections/ns/name
+```
