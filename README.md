@@ -1,4 +1,4 @@
-# twentytwenty
+# role2collection
 Tooling to assist in migrating to collections
 
 These tools may cover many common cases, but do not aim to address all cases.
